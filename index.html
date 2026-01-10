@@ -211,13 +211,23 @@
             color: var(--first-color);
         }
 
+        /* hidden by default; will be shown when the Contact button is clicked */
         .home__social {
             display: flex;
             flex-direction: column;
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: opacity 240ms ease, transform 240ms ease;
+        }
+        .home__social.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
 
         .home__social-icon {
-            width: max-content;
+            margin-left: 0.70rem;
             margin-bottom: var(--mb-2);
             font-size: 1.5rem;
             color: #e0e0e0;
@@ -241,6 +251,40 @@
         .home__blob-img {
             width: 360px;
         }
+
+        /* Chat widget styles (used in About section when replacing the image) */
+        .chat-widget {
+            width: 420px;
+            height: 300px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            color: #e8e8f8;
+            border: 1px solid rgba(139,158,255,0.06);
+        }
+        .chat-header {
+            font-weight: 700;
+            color: var(--first-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .chat-messages {
+            flex: 1 1 auto;
+            overflow: auto;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .chat-message { max-width: 100%; }
+        .chat-message.user { align-self: flex-end; background: rgba(139,158,255,0.12); padding: 0.5rem 0.6rem; border-radius: 0.5rem; }
+        .chat-message.bot { align-self: flex-start; background: rgba(255,255,255,0.03); padding: 0.5rem 0.6rem; border-radius: 0.5rem; }
+        .chat-form { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .chat-input { flex: 1 1 auto; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid rgba(139,158,255,0.08); background: transparent; color: #fff; }
+        .chat-send { background: var(--first-color); color: #fff; border: none; padding: 0.45rem 0.75rem; border-radius: 0.5rem; cursor: pointer; }
+        .chat-config { margin-top: 0.5rem; font-size: 0.8rem; color: #bdbde6; }
 
         .button {
             display: inline-block;
@@ -567,6 +611,7 @@
             .home__img {
                 width: 300px;
                 bottom: 25%;
+                right: -6rem;
             }
             .about__container {
                 grid-template-columns: repeat(2, 1fr);
@@ -624,6 +669,7 @@
             .home__img {
                 width: 400px;
                 bottom: 10%;
+                right: -8rem;
             }
             .about__container {
                 padding-top: 2rem;
@@ -649,6 +695,7 @@
             }
             .home__img {
                 width: 450px;
+                right: -13rem;
             }
         }
     </style>
@@ -682,12 +729,12 @@
         <section class="home bd-grid" id="home">
             <div class="home__data">
                 <h1 class="home__title">Hi,<br>I'm <span class="home__title-color">Mohit Krishna Arumalla</span><br>Software Engineer</h1>
-                <a href="#contact" class="button">Contact Me</a>
+                <a href="#contact" id="contact-btn" class="button">Contact Me</a>
             </div>
 
             <div class="home__social">
-                <a href="https://linkedin.com/in/mohit-krishna-arumalla" target="_blank" class="home__social-icon"><i class='bx bxl-linkedin'></i></a>
-                <a href="https://github.com/mohitkrishna" target="_blank" class="home__social-icon"><i class='bx bxl-github'></i></a>
+                <a href="https://www.linkedin.com/in/mohit-krishna-arumalla-0830551b5/" target="_blank" class="home__social-icon"><i class='bx bxl-linkedin'></i></a>
+                <a href="https://github.com/mohit-cell" target="_blank" class="home__social-icon"><i class='bx bxl-github'></i></a>
                 <a href="mailto:marumalla@cs.stonybrook.edu" class="home__social-icon"><i class='bx bx-envelope'></i></a>
             </div>
 
@@ -698,19 +745,50 @@
                     </mask>
                     <g mask="url(#mask0)">
                         <path d="M9.19024 145.964C34.0253 76.5814 114.865 54.7299 184.111 29.4823C245.804 6.98884 311.86 -14.9503 370.735 14.143C431.207 44.026 467.948 107.508 477.191 174.311C485.897 237.229 454.931 294.377 416.506 344.954C373.74 401.245 326.068 462.801 255.442 466.189C179.416 469.835 111.552 422.137 65.1576 361.805C17.4835 299.81 -17.1617 219.583 9.19024 145.964Z"/>
-                        <image class="home__blob-img" x="50" y="60" width="360" height="360" href="assets/img/perfil.jpeg"/>
+                        <image class="home__blob-img" x="50" y="110" width="360" height="360" href="assets/img/perfil.jpeg"/>
                     </g>
                 </svg>
             </div>
         </section>
+
+    <script>
+        // Show home social icons when Contact button is clicked
+        (function () {
+            const btn = document.getElementById('contact-btn');
+            const socials = document.querySelector('.home__social');
+            const contactSection = document.querySelector('#contact');
+            if (!btn || !socials) return;
+
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                socials.classList.add('visible');
+                // After revealing, scroll to contact section if present
+                if (contactSection) {
+                    setTimeout(() => contactSection.scrollIntoView({ behavior: 'smooth' }), 250);
+                }
+            });
+        })();
+    </script>
 
         <!--===== ABOUT =====-->
         <section class="about section" id="about">
             <h2 class="section-title">About Me</h2>
             <div class="about__container bd-grid">
                 <div class="about__img">
-                    <div style="width: 200px; height: 200px; background: linear-gradient(135deg, rgba(139, 158, 255, 0.3), rgba(166, 193, 255, 0.3)); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                        <i class='bx bx-code-alt' style="font-size: 80px; color: var(--first-color);"></i>
+                    <!-- Chat widget replaces the static image. User must supply their OpenAI API key in the widget. -->
+                    <div class="chat-widget" id="chat-widget">
+                        <div class="chat-header">Ask about Mohit</div>
+                        <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+                        <form id="chat-form" class="chat-form">
+                            <input id="chat-input" class="chat-input" placeholder="Ask about my skills or experience..." autocomplete="off" />
+                            <button type="submit" class="chat-send">Send</button>
+                        </form>
+                        <div class="chat-config" id="chat-config">
+                            <div style="margin-top:6px"> </div>
+                            <div style="margin-top:8px; text-align:center;">
+                                <a id="resume-download" class="button" href="/assets/Resumes/Arumalla_Mohit_Krishna.pdf" download style="padding:6px 12px;font-size:0.85rem;">Download Resume</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -719,6 +797,95 @@
                 </div>
             </div>
         </section>
+
+    <script>
+        // Chat widget logic: collects resume text from the page and queries OpenAI with the user's API key stored in session
+        (function () {
+            const form = document.getElementById('chat-form');
+            const input = document.getElementById('chat-input');
+            const messagesEl = document.getElementById('chat-messages');
+            // no client-side key input — server proxy supplies the API key
+
+            function appendMessage(text, who = 'bot') {
+                const el = document.createElement('div');
+                el.className = 'chat-message ' + (who === 'user' ? 'user' : 'bot');
+                el.textContent = text;
+                messagesEl.appendChild(el);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function buildResumeContext() {
+                // The server proxy provides the resume context; the frontend sends only the user's question.
+                return '';
+            }
+
+            function getSessionId() {
+                let sid = sessionStorage.getItem('chat_session_id');
+                if (!sid) {
+                    sid = 's_' + Math.random().toString(36).slice(2, 12);
+                    sessionStorage.setItem('chat_session_id', sid);
+                    sessionStorage.setItem('chat_count', '0');
+                }
+                return sid;
+            }
+
+            async function queryOpenAI(question) {
+                // client-side per-session rate limit: 10 queries
+                const count = parseInt(sessionStorage.getItem('chat_count') || '0', 10);
+                if (count >= 10) {
+                    throw new Error('Rate limit: maximum 10 queries per session reached.');
+                }
+                // increment local counter for this session
+                sessionStorage.setItem('chat_count', String(count + 1));
+
+                const sessionId = getSessionId();
+
+                // Call the server-side proxy instead of OpenAI directly
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Session-Id': sessionId },
+                    body: JSON.stringify({ question })
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    // if server returns 429 (server-side session limit), reflect it to client and decrement local counter
+                    if (res.status === 429) {
+                        // decrement local count to allow user to try again after refresh (server enforces limit)
+                        const current = parseInt(sessionStorage.getItem('chat_count') || '0', 10);
+                        sessionStorage.setItem('chat_count', String(Math.max(0, current - 1)));
+                        throw new Error(txt || 'Rate limit exceeded on server');
+                    }
+                    throw new Error('Proxy error: ' + res.status + ' ' + txt);
+                }
+                const json = await res.json();
+                return json.answer || '';
+            }
+
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const q = input.value.trim();
+                    if (!q) return;
+                    appendMessage(q, 'user');
+                    input.value = '';
+                    appendMessage('...', 'bot');
+                    try {
+                        const answer = await queryOpenAI(q);
+                        // replace the last '...' bot message
+                        const last = messagesEl.querySelector('.chat-message.bot:last-child');
+                        if (last) last.textContent = answer;
+                        else appendMessage(answer, 'bot');
+                    } catch (err) {
+                        const last = messagesEl.querySelector('.chat-message.bot:last-child');
+                        if (last) last.textContent = 'Error: ' + err.message;
+                        else appendMessage('Error: ' + err.message, 'bot');
+                    }
+                });
+            }
+
+            // no client-side key handling
+        })();
+    </script>
 
         <!--===== SKILLS =====-->
         <section class="skills section" id="skills">
